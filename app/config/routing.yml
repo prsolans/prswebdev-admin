@@ -1,0 +1,5 @@
+prs_resume:
+    resource: "@PRSResumeBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
