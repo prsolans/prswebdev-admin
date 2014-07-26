@@ -50,26 +50,25 @@ class ProjectController extends Controller
     /**
      * Lists all Project entities - JSON format.
      *
-     * @Route("/api", name="project_api")
+     * @Route("/api.json", name="project_api", defaults={"_format"="json"}))
      * @Method("GET")
      * @Template()
      */
     public function apiAction()
     {
-        list($filterForm, $queryBuilder) = $this->filter();
+	$projects = $this->getDoctrine()->getRepository('PRSResumeBundle:Project')->findAll();
 
-        list($entities, $pagerHtml) = $this->paginator($queryBuilder);
+	if(!$projects){
+		$projects = false;
+	}
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new GetSetMethodNormalizer());
+	$jsonContent = array();
 
-        $serializer = new Serializer($normalizers, $encoders);
-        $jsonContent = $serializer->serialize($entities, 'json');
-
-        return array(
-            'jsonContent' => $jsonContent,
-            'entities' => $entities
-        );
+	foreach($projects AS $item){
+		array_push($jsonContent, array('id' => $item->getId(), 'name' => $item->getName(), 'description' => $item->getDescription(), 'image' => $item->getImage()));
+	}
+	$data = json_encode($jsonContent);
+	return $this->render('PRSResumeBundle:Project:api.html.twig', array('jsonContent' => $data));
     }
 
     /**
