@@ -1,1 +1,9 @@
-Hello Paul!
+<h1>Welcome</h1>
+
+{% if app.user is not null %}
+Hello {{app.user.username}}!
+<ul><li><a href="project/">Projects</a></li></ul>
+{% else %}
+<a href="login">Login</a>
+{% endif %}
+
